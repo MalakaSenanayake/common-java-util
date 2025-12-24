@@ -1,4 +1,4 @@
-package common.java.util;
+package com.mavora.util;
 
 import java.awt.Toolkit;
 import java.io.BufferedReader;

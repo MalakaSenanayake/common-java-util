@@ -1,4 +1,4 @@
-package common.java.util;
+package com.mavora.util;
 
 /**
  * Utility class for string manipulation operations.

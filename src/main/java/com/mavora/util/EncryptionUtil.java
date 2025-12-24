@@ -1,4 +1,4 @@
-package common.java.util;
+package com.mavora.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.KeyGenerator;

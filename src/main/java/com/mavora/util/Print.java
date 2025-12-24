@@ -1,4 +1,4 @@
-package common.java.util;
+package com.mavora.util;
 
 public class Print {
     private static final String RESET = "\u001B[0m";

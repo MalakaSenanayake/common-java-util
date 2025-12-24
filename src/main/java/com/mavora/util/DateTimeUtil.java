@@ -1,4 +1,4 @@
-package common.java.util;
+package com.mavora.util;
 
 import java.sql.Timestamp;
 import java.text.ParseException;
