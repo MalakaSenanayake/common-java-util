@@ -1,7 +1,6 @@
 com\mavora\util\EnvironmentVariableUtil.class
 com\mavora\util\GenerateUtil.class
 com\mavora\util\Print.class
-com\mavora\util\CheckUtil.class
 com\mavora\util\StringUtil.class
 com\mavora\util\CalculationUtil.class
 com\mavora\util\NumberUtil.class
