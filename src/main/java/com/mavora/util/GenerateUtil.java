@@ -24,7 +24,7 @@ public class GenerateUtil {
      */
     public static String getPrimaryKey() {
         try {
-            return getTimeStamp() + getRandomKey() + getRandomKey();
+            return getUUID();
         } catch (Exception ex) {
             handleException("Failed to generate primary key", ex);
             // Fallback to UUID if timestamp/random fails
