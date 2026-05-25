@@ -82,7 +82,7 @@ public class GenerateUtil {
             return UUID.randomUUID().toString().replace("-", "");
         } catch (Exception ex) {
             handleException("Failed to generate UUID", ex);
-            return "defaultuuid0000000000000000000000000000"; // Fallback UUID-like string
+            return getTimeStamp(); // Fallback UUID-like string
         }
     }
 
