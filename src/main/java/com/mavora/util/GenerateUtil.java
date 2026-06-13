@@ -5,6 +5,9 @@
  */
 package com.mavora.util;
 
+import com.github.f4b6a3.tsid.Tsid;
+import com.github.f4b6a3.tsid.TsidFactory;
+
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Random;
@@ -15,35 +18,56 @@ import java.util.UUID;
  *
  * @author Malaka Senanayake
  */
-public class GenerateUtil {
+public final class GenerateUtil {
 
-    /**
-     * Generates a primary key by combining timestamp and random numbers.
-     *
-     * @return A unique string identifier combining timestamp and random values
-     */
-    public static String getPrimaryKey() {
-        try {
-            return getUUID();
-        } catch (Exception ex) {
-            handleException("Failed to generate primary key", ex);
-            // Fallback to UUID if timestamp/random fails
-            return getUUID();
+    private static final TsidFactory FACTORY;
+
+    static {
+        // NODE_ID → environment variable එකෙන් inject කරන්න
+        // Docker/JAR run කරද්දී: -DNODE_ID=1 හෝ ENV NODE_ID=1
+        int nodeId = Integer.parseInt(
+                System.getProperty("NODE_ID",
+                        System.getenv().getOrDefault("NODE_ID", "1"))
+        );
+
+        if (nodeId < 0 || nodeId > 255) {
+            throw new IllegalStateException(
+                    "NODE_ID must be 0–255 for TSID-256. Got: " + nodeId
+            );
         }
+
+        // TSID-256 → 8 bits node + 14 bits sequence
+        // Per node: 16,384 IDs per millisecond — ඔබට more than enough
+        FACTORY = TsidFactory.builder()
+                .withNodeBits(8)
+                .withNode(nodeId)
+                .build();
+    }
+    private GenerateUtil() {}
+
+    /** Primary key generate  — For BIGINT column  */
+    public static Long getPrimaryKey() {
+        return FACTORY.create().toLong();
+    }
+    /** For Debug/logging — don't expose production API   */
+    public static Tsid nextTsid() {
+        return FACTORY.create();
     }
 
-    /**
-     * Generates a random 5-digit number as a string.
-     *
-     * @return A random 5-digit number as a string
-     */
-    private static String getRandomKey() {
+    public static String getCode(String prefix) {
+        return getRandomKey(prefix);
+    }
+    public static String getCode() {
+        return getRandomKey("");
+    }
+
+    private static String getRandomKey(String prefix) {
         try {
             Random r = new Random();
             int low = 10000;
             int high = 99999;
             int randomValue = r.nextInt(high - low) + low;
-            return String.valueOf(randomValue);
+            return String.valueOf(prefix+randomValue);
         } catch (IllegalArgumentException ex) {
             handleException("Invalid range in random key generation", ex);
             return "00000"; // Fallback value
@@ -52,48 +76,9 @@ public class GenerateUtil {
             return "00000"; // Fallback value
         }
     }
-
-    /**
-     * Generates a timestamp string in the format yyyMMddHHmmssSSS.
-     *
-     * @return A formatted timestamp string
-     */
-    private static String getTimeStamp() {
-        try {
-            String timeStamp = new SimpleDateFormat("yyyy-MM-dd-HH-mm-ss-SSS")
-                    .format(Calendar.getInstance().getTime());
-            return timeStamp.replace("-", "");
-        } catch (IllegalArgumentException ex) {
-            handleException("Invalid date format pattern", ex);
-            return "19700101000000000"; // Fallback to epoch time
-        } catch (Exception ex) {
-            handleException("Failed to generate timestamp", ex);
-            return "19700101000000000"; // Fallback to epoch time
-        }
-    }
-
-    /**
-     * Generates a UUID string without hyphens.
-     *
-     * @return A UUID string without hyphens
-     */
-    private static String getUUID() {
-        try {
-            return UUID.randomUUID().toString().replace("-", "");
-        } catch (Exception ex) {
-            handleException("Failed to generate UUID", ex);
-            return getTimeStamp(); // Fallback UUID-like string
-        }
-    }
-
-    /**
-     * Handles exceptions by logging them to error output with detailed information.
-     *
-     * @param message Context message about the error
-     * @param ex Exception to handle
-     */
     private static void handleException(String message, Exception ex) {
         System.err.println(message + ": " + ex.getMessage());
         ex.printStackTrace();
     }
+
 }
