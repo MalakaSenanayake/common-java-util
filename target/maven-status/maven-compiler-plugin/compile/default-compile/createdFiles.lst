@@ -1,10 +1,12 @@
 com\mavora\util\GenerateUtil.class
 com\mavora\util\Print.class
 com\mavora\util\NumberUtil.class
+com\mavora\util\DateRangeFailureKind.class
 com\mavora\util\EncryptionUtil.class
 com\mavora\util\ValidationUtil.class
 com\mavora\util\GenerateUtilUUID.class
 com\mavora\util\EnvironmentVariableUtil.class
+com\mavora\util\DateRangeValidationResult.class
 com\mavora\util\MachineIdUtil.class
 com\mavora\util\PasswordHasher.class
 com\mavora\util\StringUtil.class
